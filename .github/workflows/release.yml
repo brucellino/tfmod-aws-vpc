@@ -14,7 +14,17 @@ jobs:
           - simple
     name: validate
     runs-on: ubuntu-22.04
+    env:
+      CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
     steps:
+      - name: Tailscale GPG key
+        run: curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+      - name: Add Tailscale repo config
+        run: curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+      - name: Install tailscale
+        run: sudo apt-get update ; sudo apt-get install -y tailscale
+      - name: Join Tailnet
+        run: sudo tailscale up  --authkey ${{ secrets.TS_KEY }}
       - name: Checkout code
         uses: 'actions/checkout@v2'
         with:

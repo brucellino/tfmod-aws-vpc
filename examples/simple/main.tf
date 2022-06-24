@@ -1,21 +1,39 @@
-# This is the default example
-# customise it as you see fit for your example usage of your module
+provider "vault" {
 
-# add provider configurations here, for example:
-# provider "aws" {
-#
-# }
+}
 
-# Declare your backends and other terraform configuration here
-# This is an example for using the consul backend.
-# terraform {
-#   backend "consul" {
-#     path = "test_module/simple"
-#   }
-# }
+variable "vault_aws_secrets_path" {
+  type        = string
+  description = "Path on Vault where the AWS secrets store is mounted"
+}
+
+variable "vault_aws_access_credentials_role_name" {
+  type        = string
+  description = "Name of the role requested with AWS credentials"
+}
+
+variable "aws_region" {
+  type    = string
+  default = "us-east-1"
+}
+data "vault_aws_access_credentials" "creds" {
+  backend = var.vault_aws_secrets_path
+  role    = var.vault_aws_access_credentials_role_name
+}
+
+provider "aws" {
+  access_key = data.vault_aws_access_credentials.creds.access_key
+  secret_key = data.vault_aws_access_credentials.creds.secret_key
+  region     = var.aws_region
+}
+
+terraform {
+  backend "consul" {
+    path = "tfmod_aws_vpc/simple"
+  }
+}
 
 
 module "example" {
   source = "../../"
-  dummy  = "test"
 }
