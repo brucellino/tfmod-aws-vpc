@@ -8,8 +8,6 @@ on:
       - main
 jobs:
   validate:
-    needs:
-      - tailscale
     strategy:
       matrix:
         example:
