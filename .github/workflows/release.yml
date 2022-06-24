@@ -42,7 +42,9 @@ jobs:
       matrix:
         example:
           - simple
-    name: validate
+    name: plan
+    needs:
+      - validate
     runs-on: ubuntu-22.04
     env:
       CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
@@ -73,7 +75,7 @@ jobs:
           ./terraform workspace select ${{ github.event.pull_request.number }} ||\
           ./terraform workspace new ${{ github.event.pull_request.number }}
       - name: Create workspace (main)
-        if: ${{ github.event_name = 'push' && github.ref == 'main' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'main' }}
         run: |
           ./terraform workspace select main || \
           ./terraform workspace new main
