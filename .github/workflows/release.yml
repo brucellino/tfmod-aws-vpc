@@ -19,6 +19,8 @@ jobs:
         run: sudo apt-get update ; sudo apt-get install -y tailscale
       - name: Join Tailnet
         run: sudo tailscale up  --authkey ${{ secrets.TS_KEY }}
+      - name: Debug
+        run: host bare
 
   validate:
     needs:
