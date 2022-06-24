@@ -48,6 +48,7 @@ jobs:
     runs-on: ubuntu-22.04
     env:
       CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
+      VAULT_ADDR: "wallpi.brucellino.github.beta.tailscale.net:8200"
     steps:
       - name: Tailscale GPG key
         run: curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
