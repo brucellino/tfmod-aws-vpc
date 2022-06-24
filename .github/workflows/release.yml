@@ -29,6 +29,8 @@ jobs:
           - simple
     name: validate
     runs-on: ubuntu-22.04
+    env:
+      CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net"
     steps:
       - name: Checkout code
         uses: 'actions/checkout@v2'
