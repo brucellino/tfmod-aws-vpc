@@ -79,9 +79,11 @@ jobs:
         run: |
           ./terraform workspace select main || \
           ./terraform workspace new main
+      - name: Plan
+        run: ./terraform -chdir=examples/${{ matrix.example }} plan
   release:
     needs:
-      - validate
+      - plan
     name: Release
     runs-on: ubuntu-latest
     steps:
