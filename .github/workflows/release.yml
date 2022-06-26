@@ -7,6 +7,23 @@ on:
     branches:
       - main
 jobs:
+  token:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Get JQ and curl
+        run: |
+          sudo apt-get install -y jq curl
+      - name: Get token
+        run: |
+          curl --request POST \
+          --data '{\
+            "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
+            "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
+            http://wallpi:8200/v1/auth/github-runners/login \
+            | jq -r '.auth.client_token' > token
+      - name: Set VAULT_TOKEN
+        run: |
+          echo "VAULT_TOKEN=$(cat token)" >> GITHUB_ENV
   validate:
     strategy:
       matrix:
@@ -82,6 +99,8 @@ jobs:
           ./terraform workspace new main
       - name: Plan
         run: ./terraform -chdir=examples/${{ matrix.example }} plan
+      - name: apply
+        run: echo "not implemented yet"
   release:
     needs:
       - plan
