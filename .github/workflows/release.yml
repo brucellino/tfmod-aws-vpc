@@ -7,23 +7,6 @@ on:
     branches:
       - main
 jobs:
-  token:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Get JQ and curl
-        run: |
-          sudo apt-get install -y jq curl
-      - name: Get token
-        run: |
-          curl --fail --request POST \
-          --data '{\
-            "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
-            "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
-            http://wallpi.brucellino.github.beta.tailscale.net:8200/v1/auth/github-runners/login \
-            | jq -r '.auth.client_token' > token
-      - name: Set VAULT_TOKEN
-        run: |
-          echo "VAULT_TOKEN=$(cat token)" >> GITHUB_ENV
   validate:
     strategy:
       matrix:
@@ -60,8 +43,6 @@ jobs:
         example:
           - simple
     name: plan
-    needs:
-      - token
     runs-on: ubuntu-22.04
     env:
       CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
@@ -97,14 +78,28 @@ jobs:
         run: |
           ./terraform workspace select main || \
           ./terraform workspace new main
+      - name: Get token
+        run: |
+          curl --fail --request POST \
+          --data '{\
+            "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
+            "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
+            http://wallpi.brucellino.github.beta.tailscale.net:8200/v1/auth/github-runners/login \
+            | jq -r '.auth.client_token' > token
+      - name: Set VAULT_TOKEN
+        run: |
+          echo "VAULT_TOKEN=$(cat token)" >> GITHUB_ENV
       - name: Plan
-        run: ./terraform -chdir=examples/${{ matrix.example }} plan
+        run: |
+          VAULT_TOKEN=$(cat token) \
+          ./terraform \
+          -chdir=examples/${{ matrix.example }} \
+          plan
       - name: apply
         run: echo "not implemented yet"
   release:
     needs:
       - plan
-      - token
     name: Release
     runs-on: ubuntu-latest
     steps:
