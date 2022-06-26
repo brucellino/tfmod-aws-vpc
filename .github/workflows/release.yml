@@ -61,7 +61,6 @@ jobs:
           - simple
     name: plan
     needs:
-      - validate
       - token
     runs-on: ubuntu-22.04
     env:
