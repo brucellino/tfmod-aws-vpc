@@ -19,7 +19,7 @@ jobs:
           --data '{\
             "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
             "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
-            http://wallpi:8200/v1/auth/github-runners/login \
+            http://wallpi.brucellino.github.beta.tailscale.net:8200/v1/auth/github-runners/login \
             | jq -r '.auth.client_token' > token
       - name: Set VAULT_TOKEN
         run: |
