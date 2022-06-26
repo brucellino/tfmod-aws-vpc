@@ -78,25 +78,25 @@ jobs:
         run: |
           ./terraform workspace select main || \
           ./terraform workspace new main
-      - name: Get token
-        run: |
-          curl --fail --request POST \
-          --data '{\
-            "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
-            "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
-            http://wallpi.brucellino.github.beta.tailscale.net:8200/v1/auth/github-runners/login \
-            | jq -r '.auth.client_token' > token
-      - name: Set VAULT_TOKEN
-        run: |
-          echo "VAULT_TOKEN=$(cat token)" >> GITHUB_ENV
-      - name: Plan
-        run: |
-          VAULT_TOKEN=$(cat token) \
-          ./terraform \
-          -chdir=examples/${{ matrix.example }} \
-          plan
-      - name: apply
-        run: echo "not implemented yet"
+      # - name: Get token
+      #   run: |
+      #     curl --fail --request POST \
+      #     --data '{\
+      #       "role_id": "'"${VAULT_APPROLE_ROLE_ID}"'",\
+      #       "secret_id": "'"${VAULT_APPROLE_SECRET_ID}"'"}' \
+      #       http://wallpi.brucellino.github.beta.tailscale.net:8200/v1/auth/github-runners/login \
+      #       | jq -r '.auth.client_token' > token
+      # - name: Set VAULT_TOKEN
+      #   run: |
+      #     echo "VAULT_TOKEN=$(cat token)" >> GITHUB_ENV
+      # - name: Plan
+      #   run: |
+      #     VAULT_TOKEN=$(cat token) \
+      #     ./terraform \
+      #     -chdir=examples/${{ matrix.example }} \
+      #     plan
+      # - name: apply
+      #   run: echo "not implemented yet"
   release:
     needs:
       - plan
