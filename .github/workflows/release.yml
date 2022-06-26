@@ -62,6 +62,7 @@ jobs:
     name: plan
     needs:
       - validate
+      - token
     runs-on: ubuntu-22.04
     env:
       CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
@@ -104,6 +105,7 @@ jobs:
   release:
     needs:
       - plan
+      - token
     name: Release
     runs-on: ubuntu-latest
     steps:
