@@ -41,4 +41,17 @@ module "example" {
     Environment = "nonprod"
     Scope       = "internal"
   }
+
+  subnets = {
+    internal_us_east_1a = {
+      az     = "us-east-1a"
+      name   = "infra-us-east-1a-internal"
+      public = false
+      tags = {
+        Name  = "infra-us-east-1a-internal"
+        Scope = "internal"
+      }
+      cidr = "10.0.1.0/24"
+    }
+  }
 }
