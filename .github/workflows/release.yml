@@ -38,6 +38,8 @@ jobs:
       - name: Validate terraform
         run: ./terraform -chdir=examples/${{ matrix.example }} validate
   plan:
+    needs:
+      - validate
     strategy:
       matrix:
         example:
