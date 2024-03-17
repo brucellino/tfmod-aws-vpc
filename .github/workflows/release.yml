@@ -15,7 +15,7 @@ jobs:
     name: validate
     runs-on: ubuntu-22.04
     env:
-      CONSUL_HTTP_ADDR: "bare.brucellino.github.beta.tailscale.net:8500"
+      CONSUL_HTTP_ADDR: "bare.${{ secrets.TS_DNS }}:8500"
     steps:
       - name: Tailscale GPG key
         run: curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
@@ -47,8 +47,8 @@ jobs:
     name: plan
     runs-on: ubuntu-22.04
     env:
-      CONSUL_HTTP_ADDR: "bare.orca-ordinal.ts.net:8500"
-      VAULT_ADDR: "sense.orca-ordinal.ts.net:8200"
+      CONSUL_HTTP_ADDR: "bare.${{ secrets.TS_DNS }}:8500"
+      VAULT_ADDR: "sense.${{ secrets.TS_DNS }}:8200"
     steps:
       - name: Tailscale GPG key
         run: curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
@@ -64,7 +64,7 @@ jobs:
           fetch-depth: 0
       - name: Get Terraform
         run: |
-          curl -fSL https://releases.hashicorp.com/terraform/1.2.3/terraform_1.2.3_linux_amd64.zip \
+          curl -fSL https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip \
           | gunzip -> terraform ; chmod u+x terraform
       - name: Init terraform
         run: ./terraform -chdir=examples/${{ matrix.example }} init
@@ -110,9 +110,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: 'lts/iron'
       - name: Install dependencies
         run: |
           npm install -D '@semantic-release/commit-analyzer' \
