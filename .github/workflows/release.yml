@@ -13,7 +13,7 @@ jobs:
         example:
           - simple
     name: validate
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       CONSUL_HTTP_ADDR: "bare.${{ secrets.TS_DNS }}:8500"
     steps:
@@ -45,7 +45,7 @@ jobs:
         example:
           - simple
     name: plan
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       CONSUL_HTTP_ADDR: "bare.${{ secrets.TS_DNS }}:8500"
       VAULT_ADDR: "sense.${{ secrets.TS_DNS }}:8200"
